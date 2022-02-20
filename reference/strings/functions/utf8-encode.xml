@@ -5,6 +5,10 @@
   <refname>utf8_encode</refname>
   <refpurpose>Converts a string from ISO-8859-1 to UTF-8</refpurpose>
  </refnamediv>
+
+ <refsynopsisdiv>
+  &warn.deprecated.function-8-2-0;
+ </refsynopsisdiv>
  
  <refsect1 role="description">
   &reftitle.description;
@@ -86,6 +90,50 @@ echo bin2hex($utf8_string), "\n";
     control characters. This function will not convert such
     <literal>Windows-1252</literal> characters correctly. Use a different
     function if <literal>Windows-1252</literal> conversion is required.
+   </para>
+  </note>
+  <note>
+   <title>Deprecation and alternatives</title>
+   <para>
+    This function has been <emphasis>DEPRECATED</emphasis> as of PHP 8.2.0,
+    and will be removed in a future version. Alternatives include
+    <function>mb_convert_encoding</function>, <function>iconv</function>,
+    and <methodname>UConverter::transcode</methodname>.
+   </para>
+   <para>
+    The following all give the same result:
+    <informalexample>
+     <programlisting role="php">
+      <![CDATA[
+<?php
+$iso8859_1_string = "\x5A\x6F\xEB"; // 'Zoë' in ISO-8859-1
+$utf8_string = utf8_encode($iso8859_1_string);
+echo bin2hex($utf8_string), "\n";
+
+$iso8859_1_string = "\x5A\x6F\xEB"; // 'Zoë' in ISO-8859-1
+$utf8_string = mb_convert_encoding($iso8859_1_string, 'UTF-8', 'ISO-8859-1');
+echo bin2hex($utf8_string), "\n";
+
+$iso8859_1_string = "\x5A\x6F\xEB"; // 'Zoë' in ISO-8859-1
+$utf8_string = iconv('ISO-8859-1', 'UTF-8', $iso8859_1_string);
+echo bin2hex($utf8_string), "\n";
+
+$iso8859_1_string = "\x5A\x6F\xEB"; // 'Zoë' in ISO-8859-1
+$utf8_string = UConverter::transcode($iso8859_1_string, 'UTF8', 'ISO-8859-1');
+echo bin2hex($utf8_string), "\n";
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+      <![CDATA[
+5a6fc3ab
+5a6fc3ab
+5a6fc3ab
+5a6fc3ab
+]]>
+     </screen>
+    </informalexample>
    </para>
   </note>
  </refsect1>
